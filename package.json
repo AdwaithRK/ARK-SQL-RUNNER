@@ -1,0 +1,31 @@
+{
+  "name": "ark-sql-runner",
+  "version": "1.0.0",
+  "description": "A tool for running sql queries from a .sql file by running it synchronously",
+  "main": "index.js",
+  "dependencies": {
+    "minimist": "^1.2.5",
+    "mysql": "^2.18.1"
+  },
+  "bin": {
+    "ark-sql-runner": "./index.js"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "ark-sql-runner"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdwaithRK/ARK-SQL-RUNNER.git"
+  },
+  "keywords": [
+    "sql",
+    "sql-runner"
+  ],
+  "author": "adwaith r krishna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdwaithRK/ARK-SQL-RUNNER/issues"
+  },
+  "homepage": "https://github.com/AdwaithRK/ARK-SQL-RUNNER#readme"
+}
