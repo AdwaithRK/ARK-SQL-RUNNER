@@ -25,4 +25,8 @@ ark-sql-runner need db credentials to run queries (Taking credentials from the E
         * -d or --d --> for the database name. Default Value: "database"
 
 
-For help use ark-sql-runner --help
+For help use 
+
+```bash
+ark-sql-runner --help
+```

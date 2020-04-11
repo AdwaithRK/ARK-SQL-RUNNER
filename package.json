@@ -1,6 +1,6 @@
 {
   "name": "ark-sql-runner",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A tool for running sql queries from a .sql file by running it synchronously",
   "main": "index.js",
   "dependencies": {
