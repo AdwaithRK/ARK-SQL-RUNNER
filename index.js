@@ -4,6 +4,7 @@ const minimist = require("minimist");
 const fs = require("fs");
 const mysql = require("mysql");
 const path = require("path");
+var connection;
 
 const args = minimist(process.argv.slice(2), {
   alias: {
@@ -12,41 +13,50 @@ const args = minimist(process.argv.slice(2), {
     d: "database",
     p: "password",
     u: "user",
+    help: "help",
   },
+  string: ["p", "h", "d", "u", "f"],
+  boolean: ["help"],
   default: {
     f: "queries.sql",
     h: "localhost",
     p: "password",
     d: "database",
     u: "root",
+    help: false,
   },
 });
 
 const fileName = args.f;
-if (path.extname(fileName).slice(1) === "sql") {
-  var connection = mysql.createConnection({
-    host: args.h,
-    user: args.u,
-    password: args.p,
-    database: args.d,
-  });
+main();
 
-  connection.connect(function (err) {
-    if (!err) {
-      console.log("Database is connected ... Now Running Queries");
-      RunQueries();
-    } else {
-      console.log("Error connecting database ... nn");
-    }
-  });
-} else {
-  console.log("The file type is not Sql");
-  process.exit(0);
+function connectToDBAndRunQueries() {
+  if (path.extname(fileName).slice(1) === "sql") {
+    connection = mysql.createConnection({
+      host: args.h,
+      user: args.u,
+      password: args.p,
+      database: args.d,
+    });
+
+    connection.connect(function (err) {
+      if (!err) {
+        console.log("Database is connected ... Now Running Queries");
+        RunQueries();
+      } else {
+        console.log("Error connecting database ... nn");
+      }
+    });
+  } else {
+    console.log("The file type is not Sql");
+    process.exit(0);
+  }
 }
 
 RunQueries = async () => {
   let queriesInFiles = fs.readFileSync("queries.sql", "utf8");
   let funishedQueries = queriesInFiles.replace(/[\r\n]+/gm, " ").split(";");
+  console.log(funishedQueries)
   for (i = 0; i < funishedQueries.length; i++) {
     if (funishedQueries[i].trim().length) {
       let finalQuery = funishedQueries[i].trim().concat(";");
@@ -88,4 +98,23 @@ function runQuery(query, queryNo) {
       }
     });
   });
+}
+
+function main() {  if (args.help) {
+    console.log(` 
+    THANK YOU FOR USING ark-sql-runner\n
+
+    * -f or --file --> for the .sql file (If extension is not .sql error will be  
+      shown). Default Value: "queries.sql" \n
+
+   * -h or --host --> for the db host server. Default Value: "queries.sql" \n
+
+   * -u or --user --> for the db user name. Default Value: "root"\n
+
+   * -p or --password --> for db password. Default Value: "password"\n
+
+   * -d or --d --> for the database name. Default Value: "database\n`);
+  } else {
+    connectToDBAndRunQueries();
+  }
 }
