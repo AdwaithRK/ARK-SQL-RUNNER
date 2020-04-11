@@ -9,7 +9,10 @@ ark-sql-runner -f production.sql -h localhost -u root -p password -d dbname
 Usage :
 
 ark-sql-runner need db credentials to run queries (Taking credentials from the Enviroment (.env) file will be implemented soon. ) 
+    
     Command Line arguments:
+
+
         * -f or --file --> for the .sql file (If extension is not .sql error will be  
            shown). Default Value: "queries.sql"
 
