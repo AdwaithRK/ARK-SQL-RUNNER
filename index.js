@@ -54,7 +54,7 @@ function connectToDBAndRunQueries() {
 }
 
 RunQueries = async () => {
-  let queriesInFiles = fs.readFileSync("queries.sql", "utf8");
+  let queriesInFiles = fs.readFileSync(fileName, "utf8");
   let funishedQueries = queriesInFiles.replace(/[\r\n]+/gm, " ").split(";");
   console.log(funishedQueries)
   for (i = 0; i < funishedQueries.length; i++) {
@@ -67,9 +67,9 @@ RunQueries = async () => {
         console.log("\n------Error Happened-----\n");
         console.log(`The Query is: ${err.sql}\n`);
         console.log(`\n Error is : ${err.sqlMessage}, Error code: ${err.code}`);
-        fs.truncateSync("queries.sql", 0);
+        fs.truncateSync(fileName, 0);
         fs.writeFileSync(
-          "queries.sql",
+          fileName,
           funishedQueries.splice(i, funishedQueries.length).join(";\n")
         );
         console.log(
@@ -80,7 +80,7 @@ RunQueries = async () => {
       }
     }
   }
-  fs.truncateSync("queries.sql", 0);
+  fs.truncateSync(fileName, 0);
   console.log(
     "SQL File is truncated AS all your queries have been run successfully"
   );

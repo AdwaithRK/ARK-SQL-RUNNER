@@ -20,7 +20,8 @@
   },
   "keywords": [
     "sql",
-    "sql-runner"
+    "sql-runner",
+    "mySQL"
   ],
   "author": "adwaith r krishna",
   "license": "ISC",
