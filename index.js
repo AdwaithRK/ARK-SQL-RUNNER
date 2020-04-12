@@ -56,17 +56,19 @@ function connectToDBAndRunQueries() {
 RunQueries = async () => {
   let queriesInFiles = fs.readFileSync(fileName, "utf8");
   let funishedQueries = queriesInFiles.replace(/[\r\n]+/gm, " ").split(";");
-  console.log(funishedQueries)
   for (i = 0; i < funishedQueries.length; i++) {
     if (funishedQueries[i].trim().length) {
       let finalQuery = funishedQueries[i].trim().concat(";");
       try {
         await runQuery(finalQuery, i + 1);
-        console.log("Successfully Executed");
+        console.log("\n\x1b[32m", "Successfully Executed\n");
       } catch (err) {
-        console.log("\n------Error Happened-----\n");
-        console.log(`The Query is: ${err.sql}\n`);
-        console.log(`\n Error is : ${err.sqlMessage}, Error code: ${err.code}`);
+        console.log("\x1b[31m", "\n------Error Happened-----\n");
+        console.log("\x1b[37m", `The Query is: ${err.sql}\n`);
+        console.log(
+          "\x1b[31m",
+          `\n Error is : ${err.sqlMessage}, Error code: ${err.code}`
+        );
         fs.truncateSync(fileName, 0);
         fs.writeFileSync(
           fileName,
@@ -90,7 +92,7 @@ RunQueries = async () => {
 function runQuery(query, queryNo) {
   return new Promise(function (resolve, reject) {
     connection.query(query, function (error, results, fields) {
-      console.log(`\nQuery No ---- ${queryNo} \nQuery is --- ${query}`);
+      consoleQuery(queryNo, query);
       if (error) {
         reject(error);
       } else {
@@ -100,7 +102,12 @@ function runQuery(query, queryNo) {
   });
 }
 
-function main() {  if (args.help) {
+function consoleQuery(queryNo, query) {
+  console.log("\x1b[37m", `\nQuery No ---- ${queryNo} \nQuery is --- ${query}`);
+}
+
+function main() {
+  if (args.help) {
     console.log(` 
     THANK YOU FOR USING ark-sql-runner\n
 
