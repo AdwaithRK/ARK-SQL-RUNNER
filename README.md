@@ -18,7 +18,7 @@ ark-sql-runner need db credentials to run queries (Taking credentials from the E
         * -f or --file --> for the .sql file (If extension is not .sql error will be  
            shown). Default Value: "queries.sql"
 
-        * -h or --host --> for the db host server. Default Value: "queries.sql"
+        * -h or --host --> for the db host server. Default Value: "localhost"
 
         * -u or --user --> for the db user name. Default Value: "root"
 
