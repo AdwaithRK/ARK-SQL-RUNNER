@@ -4,7 +4,8 @@ const minimist = require("minimist");
 const fs = require("fs");
 const mysql = require("mysql");
 const path = require("path");
-var connection;
+let connection;
+let logString = '';
 
 const args = minimist(process.argv.slice(2), {
   alias: {
@@ -14,9 +15,10 @@ const args = minimist(process.argv.slice(2), {
     p: "password",
     u: "user",
     help: "help",
+    l: "log",
   },
   string: ["p", "h", "d", "u", "f"],
-  boolean: ["help"],
+  boolean: ["help", "l"],
   default: {
     f: "queries.sql",
     h: "localhost",
@@ -24,10 +26,12 @@ const args = minimist(process.argv.slice(2), {
     d: "database",
     u: "root",
     help: false,
+    log: false,
   },
 });
 
 const fileName = args.f;
+
 main();
 
 function connectToDBAndRunQueries() {
@@ -61,21 +65,23 @@ RunQueries = async () => {
       let finalQuery = funishedQueries[i].trim().concat(";");
       try {
         await runQuery(finalQuery, i + 1);
+        if(args.l){
+          logQueryToFile(finalQuery);
+        }
         console.log("\n\x1b[32m", "Successfully Executed\n");
       } catch (err) {
-        console.log("\x1b[31m", "\n------Error Happened-----\n");
+        if(args.l){
+          logErrorQueryToFile(err.sql, err.sqlMessage, err.code)
+        }
+        console.log("\x1b[31m", "\n------Error Occured-----\n");
         console.log("\x1b[37m", `The Query is: ${err.sql}\n`);
         console.log(
           "\x1b[31m",
-          `\n Error is : ${err.sqlMessage}, Error code: ${err.code}`
+          `\n Error is : ${err.sqlMessage}\n\n Error code: ${err.code}`
         );
         fs.truncateSync(fileName, 0);
         fs.writeFileSync(
           fileName,
-          funishedQueries.splice(i, funishedQueries.length).join(";\n")
-        );
-        console.log(
-          "Final remaining queries ===",
           funishedQueries.splice(i, funishedQueries.length).join(";\n")
         );
         process.exit(0);
@@ -88,6 +94,31 @@ RunQueries = async () => {
   );
   process.exit(0);
 };
+
+function logQueryToFile(query) {
+  let queryLine = `------------------------------------------------------------------\n
+  Time : ${new Date().toLocaleString()}\n\n
+  Query : ${query.replace(
+    /\s\s+/g,
+    " "
+  )}\n\n
+  Status : Successfully Executed \n
+  ------------------------------------------------------------------\n`;
+  fs.appendFileSync( `${fileName.substr(0, fileName.lastIndexOf("."))}.log`, queryLine);
+}
+
+function logErrorQueryToFile(query, errorMessage, errorCode){
+  let queryLine = `------------------------------------------------------------------\n
+  Time : ${new Date().toLocaleString()}\n\n
+  Query : ${query.replace(
+    /\s\s+/g,
+    " "
+  )}\n\n
+  Error Message: ${errorMessage}\n\n
+  Error Code: ${errorCode}\n\n
+  ------------------------------------------------------------------\n`;
+  fs.appendFileSync( `${fileName.substr(0, fileName.lastIndexOf("."))}.log`, queryLine);
+}
 
 function runQuery(query, queryNo) {
   return new Promise(function (resolve, reject) {

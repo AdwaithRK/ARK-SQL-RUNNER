@@ -5,7 +5,7 @@ This is a command line npm utility for running queries sequentially from a .sql 
 "ark-sql-runner" runs queries and removes the ones that are successfull from the .sql file. When one query breaks it show the DB status and exits. One can resume execution by correcting the query (Which will present at the top of the file) and running the command.
 
 ```bash
-ark-sql-runner -f production.sql -h localhost -u root -p password -d dbname
+ark-sql-runner -f production.sql -h localhost -u root -p password -d dbname -l
 ```
 
 Usage :
@@ -24,7 +24,10 @@ ark-sql-runner need db credentials to run queries (Taking credentials from the E
 
         * -p or --password --> for db password. Default Value: "password"
 
-        * -d or --d --> for the database name. Default Value: "database"
+        * -d or --database --> for the database name. Default Value: "database"
+
+        * -l or --log --> 'boolean flag' Log file name is taken same as .sql file name. Default Value: "queries.log"(as file  name is "queries.log")
+
 
 
 For help use 
