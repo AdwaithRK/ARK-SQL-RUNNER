@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "minimist": "^1.2.5",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "prompt-sync": "^4.2.0"
   },
   "bin": {
     "ark-sql-runner": "./index.js"

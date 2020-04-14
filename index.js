@@ -4,6 +4,7 @@ const minimist = require("minimist");
 const fs = require("fs");
 const mysql = require("mysql");
 const path = require("path");
+const prompt = require("prompt-sync")();
 let connection;
 
 const args = minimist(process.argv.slice(2), {
@@ -15,32 +16,51 @@ const args = minimist(process.argv.slice(2), {
     u: "user",
     help: "help",
     l: "log",
+    s: "save",
   },
   string: ["p", "h", "d", "u", "f"],
-  boolean: ["help", "l"],
+  boolean: ["help", "l", "save"],
   default: {
     f: "queries.sql",
     h: "localhost",
     p: "password",
     d: "database",
     u: "root",
+    s: false,
     help: false,
     log: false,
   },
 });
 
 const fileName = args.f;
+const configFile = __dirname + "/config.dat";
 
 main();
 
 function connectToDBAndRunQueries() {
   if (path.extname(fileName).slice(1) === "sql") {
-    connection = mysql.createConnection({
+    let configObject = {
       host: args.h,
       user: args.u,
       password: args.p,
       database: args.d,
-    });
+    };
+
+    if (fs.existsSync(configFile)) {
+      console.log("Have found saved config details");
+      let config = JSON.parse(fs.readFileSync(configFile));
+      console.log("The  config is---", config);
+      let useConfigAnswer = prompt(" Do you want to use it(Y/N) ? ");
+      if (!["n", "N"].includes(useConfigAnswer)) {
+        configObject = config;
+      }
+    }
+
+    connection = mysql.createConnection(configObject);
+
+    if (args.s) {
+      fs.writeFileSync(configFile, JSON.stringify(configObject));
+    }
 
     connection.connect(function (err) {
       if (!err) {
@@ -57,9 +77,9 @@ function connectToDBAndRunQueries() {
 }
 
 RunQueries = async () => {
-  if(!fs.existsSync(fileName)){
-    console.log(`Couldn't find file ${fileName}`)
-    process.exit(0)
+  if (!fs.existsSync(fileName)) {
+    console.log(`Couldn't find file ${fileName}`);
+    process.exit(0);
   }
   let queriesInFiles = fs.readFileSync(fileName, "utf8");
   let funishedQueries = queriesInFiles.replace(/[\r\n]+/gm, " ").split(";");

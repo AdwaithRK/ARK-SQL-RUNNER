@@ -31,7 +31,30 @@ ark-sql-runner need db credentials to run queries (Taking credentials from the E
 
         * -l or --log --> (OPTIONAL) 'boolean flag' Log file name is taken same as *.sql file name. Default Value: "queries.log"(as file  name is "queries.log")
 
+        * -s or --save --> (OPTIONAL) 'boolean flag' For saving DB credentials for future use.
 
+
+### For saving db credentials
+
+1. Pass the flag `-s`  for saving the DB credentials for future use.
+    ```bash
+    ark-sql-runner -f production.sql -h localhost -u root -p password -d dbname -s
+    ```
+
+2. Next time just pass the file name without db credentials.
+    ```bash
+    ark-sql-runner -f production.sql
+    ```
+
+3. Answer the prompt to use the saved credentials.
+    ```sh
+      Have found saved config details
+      The  config is--- { host: 'localhost',
+                        user: 'root',
+                        password: 'password',
+                        database: 'database' }
+      Do you want to use it(Y/N) ? y
+    ```
 
 ### For help use 
 
