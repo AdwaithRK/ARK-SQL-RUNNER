@@ -5,7 +5,6 @@ const fs = require("fs");
 const mysql = require("mysql");
 const path = require("path");
 let connection;
-let logString = '';
 
 const args = minimist(process.argv.slice(2), {
   alias: {
@@ -52,12 +51,16 @@ function connectToDBAndRunQueries() {
       }
     });
   } else {
-    console.log("The file type is not Sql");
+    console.log(`The file type of ${fileName} is not Sql`);
     process.exit(0);
   }
 }
 
 RunQueries = async () => {
+  if(!fs.existsSync(fileName)){
+    console.log(`Couldn't find file ${fileName}`)
+    process.exit(0)
+  }
   let queriesInFiles = fs.readFileSync(fileName, "utf8");
   let funishedQueries = queriesInFiles.replace(/[\r\n]+/gm, " ").split(";");
   for (i = 0; i < funishedQueries.length; i++) {
@@ -65,13 +68,13 @@ RunQueries = async () => {
       let finalQuery = funishedQueries[i].trim().concat(";");
       try {
         await runQuery(finalQuery, i + 1);
-        if(args.l){
+        if (args.l) {
           logQueryToFile(finalQuery);
         }
         console.log("\n\x1b[32m", "Successfully Executed\n");
       } catch (err) {
-        if(args.l){
-          logErrorQueryToFile(err.sql, err.sqlMessage, err.code)
+        if (args.l) {
+          logErrorQueryToFile(err.sql, err.sqlMessage, err.code);
         }
         console.log("\x1b[31m", "\n------Error Occured-----\n");
         console.log("\x1b[37m", `The Query is: ${err.sql}\n`);
@@ -98,26 +101,26 @@ RunQueries = async () => {
 function logQueryToFile(query) {
   let queryLine = `------------------------------------------------------------------\n
   Time : ${new Date().toLocaleString()}\n\n
-  Query : ${query.replace(
-    /\s\s+/g,
-    " "
-  )}\n\n
+  Query : ${query.replace(/\s\s+/g, " ")}\n\n
   Status : Successfully Executed \n
   ------------------------------------------------------------------\n`;
-  fs.appendFileSync( `${fileName.substr(0, fileName.lastIndexOf("."))}.log`, queryLine);
+  fs.appendFileSync(
+    `${fileName.substr(0, fileName.lastIndexOf("."))}.log`,
+    queryLine
+  );
 }
 
-function logErrorQueryToFile(query, errorMessage, errorCode){
+function logErrorQueryToFile(query, errorMessage, errorCode) {
   let queryLine = `------------------------------------------------------------------\n
   Time : ${new Date().toLocaleString()}\n\n
-  Query : ${query.replace(
-    /\s\s+/g,
-    " "
-  )}\n\n
+  Query : ${query.replace(/\s\s+/g, " ")}\n\n
   Error Message: ${errorMessage}\n\n
   Error Code: ${errorCode}\n\n
   ------------------------------------------------------------------\n`;
-  fs.appendFileSync( `${fileName.substr(0, fileName.lastIndexOf("."))}.log`, queryLine);
+  fs.appendFileSync(
+    `${fileName.substr(0, fileName.lastIndexOf("."))}.log`,
+    queryLine
+  );
 }
 
 function runQuery(query, queryNo) {
@@ -151,7 +154,10 @@ function main() {
 
    * -p or --password --> for db password. Default Value: "password"\n
 
-   * -d or --d --> for the database name. Default Value: "database\n`);
+   * -d or --d --> for the database name. Default Value: "database\n
+   
+   * -l or --log --> (OPTIONAL) 'boolean flag' Log file name is taken same as .sql file name. Default Value: "queries.log"(as file  name is "queries.log")\n
+   `);
   } else {
     connectToDBAndRunQueries();
   }

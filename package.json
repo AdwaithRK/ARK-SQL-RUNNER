@@ -21,7 +21,8 @@
   "keywords": [
     "sql",
     "sql-runner",
-    "mySQL"
+    "mysql",
+    "initsql"
   ],
   "author": "adwaith r krishna",
   "license": "ISC",
