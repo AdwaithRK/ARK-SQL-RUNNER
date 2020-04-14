@@ -11,7 +11,7 @@ This is a command line npm utility for running queries sequentially from a *.sql
 ark-sql-runner -f production.sql -h localhost -u root -p password -d dbname
 ```
 
-Usage :
+## Usage :
 
 ark-sql-runner need db credentials to run queries (Taking credentials from the Enviroment (.env) file will be implemented soon. ) 
     
@@ -29,11 +29,11 @@ ark-sql-runner need db credentials to run queries (Taking credentials from the E
 
         * -d or --database --> for the database name. Default Value: "database"
 
-        * -l or --log --> (OPTIONAL) 'boolean flag' Log file name is taken same as .sql file name. Default Value: "queries.log"(as file  name is "queries.log")
+        * -l or --log --> (OPTIONAL) 'boolean flag' Log file name is taken same as *.sql file name. Default Value: "queries.log"(as file  name is "queries.log")
 
 
 
-For help use 
+### For help use 
 
 ```bash
 ark-sql-runner --help
