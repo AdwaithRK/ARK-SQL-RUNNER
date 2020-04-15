@@ -11,6 +11,15 @@ This is a command line npm utility for running queries sequentially from a *.sql
 ark-sql-runner -f production.sql -h localhost -u root -p password -d dbname
 ```
 
+
+## Installation
+
+You can install `ark-sql-runner` using `npm`:
+
+``` bash
+$ npm install -g ark-sql-runner
+```
+
 ## Usage :
 
 ark-sql-runner need db credentials to run queries (Taking credentials from the Enviroment (.env) file will be implemented soon. ) 
